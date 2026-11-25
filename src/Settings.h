@@ -8,7 +8,6 @@ namespace DO
 		bool disableDialogueCamera{ true };  // keep the normal camera when a conversation starts
 		bool allowMovement{ true };          // walk, run, sprint, jump and crouch while talking
 		bool allowLooking{ true };           // turn the camera with the mouse while talking
-		bool debugLog{ false };
 
 		static Settings& Get()
 		{

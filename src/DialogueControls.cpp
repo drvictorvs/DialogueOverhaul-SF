@@ -3,6 +3,7 @@
 #include "AddressCheck.h"
 #include "CameraHook.h"
 #include "GameIDs.h"
+#include "OSF.h"
 #include "Settings.h"
 
 // BSInputEnableManager keeps, besides the input layers, a "force-enabled" mask for user controls
@@ -95,7 +96,8 @@ namespace DO::DialogueControls
 
 	bool Available()
 	{
-		return Address::AllPresent("Dialogue controls", {
+		std::string missing;
+		const bool  available = Address::AllPresent("Dialogue controls", {
 			{ RE::ID::BSInputEnableManager::Singleton.id(), "BSInputEnableManager::Singleton" },
 			{ RE::ID::BSSpinLock::Lock.id(), "BSSpinLock::Lock" },
 			{ RE::ID::BSSpinLock::Unlock.id(), "BSSpinLock::Unlock" },
@@ -105,7 +107,13 @@ namespace DO::DialogueControls
 			{ RE::ID::BSStringPool::GetEntry.id(), "BSStringPool::GetEntry" },
 			{ RE::ID::BSStringPool::Entry::Release.id(), "BSStringPool::Entry::Release" },
 			{ RE::ID::BSStringPool::BucketTable::GetSingleton.id(), "BSStringPool::BucketTable::GetSingleton" },
-		});
+		}, &missing);
+		if (!available) {
+			OSF::ReportIssue("controls-ids", "Moving during conversations is unavailable",
+				"Controls stay locked while talking. Missing from the Address Library: " + missing + ".",
+				"Install the Address Library for SFSE Plugins that matches your game version, or update Dialogue Overhaul.");
+		}
+		return available;
 	}
 
 	void OnFrame()

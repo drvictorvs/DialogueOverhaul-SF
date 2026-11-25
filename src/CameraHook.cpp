@@ -2,6 +2,7 @@
 
 #include "AddressCheck.h"
 #include "GameIDs.h"
+#include "OSF.h"
 
 // The game enters the dialogue close-up by calling SetCameraState(camera, 17). The jump at the start
 // of SetCameraState drops requests for state 17; every other request goes to the original function
@@ -18,6 +19,7 @@ namespace DO::CameraHook
 		std::atomic<std::uint32_t> g_lastState{ UINT32_MAX };
 		std::atomic<std::uint64_t> g_skipped{ 0 };
 		std::atomic<std::int64_t>  g_lastSkipMs{ 0 };
+		std::atomic<bool>          g_enabled{ true };
 
 		std::int64_t NowMs()
 		{
@@ -27,7 +29,7 @@ namespace DO::CameraHook
 		// Called from several game threads.
 		void SetCameraStateHook(void* a_camera, std::uint32_t a_state)
 		{
-			if (a_state == GameID::kDialogueState) {
+			if (a_state == GameID::kDialogueState && g_enabled.load(std::memory_order_relaxed)) {
 				g_skipped.fetch_add(1, std::memory_order_relaxed);
 				// The request repeats every frame during a conversation: log only the first of a run.
 				const auto now = NowMs();
@@ -43,6 +45,11 @@ namespace DO::CameraHook
 		}
 	}
 
+	void SetEnabled(bool a_enabled)
+	{
+		g_enabled.store(a_enabled);
+	}
+
 	std::uint64_t SkippedCount()
 	{
 		return g_skipped.load(std::memory_order_relaxed);
@@ -52,7 +59,11 @@ namespace DO::CameraHook
 	{
 		using namespace GameID;
 
-		if (!Address::AllPresent("Dialogue camera", { { SetCameraState.id(), "PlayerCamera::SetCameraState" } })) {
+		std::string missing;
+		if (!Address::AllPresent("Dialogue camera", { { SetCameraState.id(), "PlayerCamera::SetCameraState" } }, &missing)) {
+			OSF::ReportIssue("camera-ids", "The dialogue camera can't be turned off",
+				"Conversations use the game's dialogue close-up. Missing from the Address Library: " + missing + ".",
+				"Install the Address Library for SFSE Plugins that matches your game version, or update Dialogue Overhaul.");
 			return false;
 		}
 
@@ -61,6 +72,9 @@ namespace DO::CameraHook
 			REX::ERROR("SetCameraState at {:X} does not match the expected code (a game update or another "
 					   "plugin's hook); the dialogue camera is left alone",
 				target);
+			OSF::ReportIssue("camera-code", "The dialogue camera can't be turned off",
+				"The game's camera code isn't what this version expects (a different game version, or another mod changes the same function). Conversations use the game's dialogue close-up.",
+				"Check for an update of Dialogue Overhaul, or for another mod that changes the dialogue camera.");
 			return false;
 		}
 

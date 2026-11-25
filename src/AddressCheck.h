@@ -18,6 +18,7 @@ namespace DO::Address
 		const char*   name;
 	};
 
-	// True when every ID is present; logs each missing one under the feature's name.
-	bool AllPresent(std::string_view a_feature, std::initializer_list<Need> a_needs);
+	// True when every ID is present; logs each missing one under the feature's name and, if
+	// a_missing is given, lists them there ("ID 113375 (PlayerCamera::SetCameraState), ...").
+	bool AllPresent(std::string_view a_feature, std::initializer_list<Need> a_needs, std::string* a_missing = nullptr);
 }

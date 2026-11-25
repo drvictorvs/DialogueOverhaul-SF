@@ -85,12 +85,15 @@ namespace DO::Address
 		return it != v0.end() && it->id == a_id && it->offset != 0;
 	}
 
-	bool AllPresent(std::string_view a_feature, std::initializer_list<Need> a_needs)
+	bool AllPresent(std::string_view a_feature, std::initializer_list<Need> a_needs, std::string* a_missing)
 	{
 		bool all = true;
 		for (const auto& need : a_needs) {
 			if (!IsPresent(need.id)) {
 				REX::ERROR("{}: Address Library ID {} ({}) is not available for this game version", a_feature, need.id, need.name);
+				if (a_missing) {
+					*a_missing += std::format("{}ID {} ({})", a_missing->empty() ? "" : ", ", need.id, need.name);
+				}
 				all = false;
 			}
 		}

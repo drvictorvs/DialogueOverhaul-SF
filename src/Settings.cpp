@@ -33,7 +33,6 @@ namespace DO
 			{ "General", "bDisableDialogueCamera", &disableDialogueCamera },
 			{ "General", "bAllowMovement", &allowMovement },
 			{ "General", "bAllowLooking", &allowLooking },
-			{ "General", "bDebugLog", &debugLog },
 		};
 
 		const auto    path = std::filesystem::path("Data/SFSE/Plugins/DialogueOverhaulSF.ini");

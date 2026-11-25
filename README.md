@@ -5,11 +5,21 @@ An SFSE plugin for Starfield that makes conversations less confining:
 - **No dialogue close-up:** the camera stays in first or third person, as it was, with no zoom or FOV change when a conversation starts.
 - **Move and look while talking:** walk, run, sprint, jump, crouch and turn the camera during a conversation.
 
-Each can be turned off in `Data/SFSE/Plugins/DialogueOverhaulSF.ini`.
+Each can be turned off on its [OSF Settings](https://github.com/ozooma10/osf-settings-slim) page or in `Data/SFSE/Plugins/DialogueOverhaulSF.ini`.
 
-Status: 0.2.0. The camera part is confirmed in game (0.1.0); moving while talking is new and not yet tested. Planned: dialogue options chosen with the number keys, with W/A/S/D left to movement (a patch for the dialogue menu).
+Status: 0.3.0. The camera part is confirmed in game (0.1.0); moving while talking (0.2.0) and the OSF Settings page are not yet tested. Planned: dialogue options chosen with the number keys, with W/A/S/D left to movement (a patch for the dialogue menu).
 
-Requires [SFSE](https://www.nexusmods.com/starfield/mods/106) and [Address Library for SFSE Plugins](https://www.nexusmods.com/starfield/mods/3256). Built for Starfield 1.16.244.
+Requires [SFSE](https://www.nexusmods.com/starfield/mods/106) and [Address Library for SFSE Plugins](https://www.nexusmods.com/starfield/mods/3256). Built for Starfield 1.16.244. Optional: [OSF Settings](https://github.com/ozooma10/osf-settings-slim) 1.0.0, for an in-game settings page.
+
+## Settings
+
+| OSF Settings | INI (`[General]`) | Default | Does |
+|---|---|---|---|
+| Keep the normal camera | `bDisableDialogueCamera` | on | No dialogue close-up or FOV change when a conversation starts |
+| Move while talking | `bAllowMovement` | on | Walk, run, sprint, jump and crouch during conversations |
+| Look around while talking | `bAllowLooking` | on | Turn the camera with the mouse during conversations |
+
+With OSF Settings installed, its page (Dialogue Overhaul) supplies the values and the INI is only a fallback. Changes there apply while the game runs: the camera setting at once, the controls at the next conversation. If part of the plugin can't run on your game version, it says so in OSF Settings' Mod Issues tab, as well as in the log. Without OSF Settings, the INI is read when the game starts.
 
 ## How it works
 
@@ -39,18 +49,22 @@ xmake f -c -m releasedbg
 xmake build -v
 ```
 
-`DialogueOverhaulSF.dll` and `.pdb` land in `build\windows\x64\releasedbg\`. With `XSE_SF_MODS_PATH` (or `XSE_SF_GAME_PATH`) set, `xmake install` copies them and the INI into place. Otherwise, make a mod with:
+`DialogueOverhaulSF.dll` and `.pdb` land in `build\windows\x64\releasedbg\`. With `XSE_SF_MODS_PATH` (or `XSE_SF_GAME_PATH`) set, `xmake install` copies them, the INI and the OSF Settings schema into place. Otherwise, make a mod with:
 
 ```
 Data/SFSE/Plugins/DialogueOverhaulSF.dll
 Data/SFSE/Plugins/DialogueOverhaulSF.pdb
 Data/SFSE/Plugins/DialogueOverhaulSF.ini
+Data/SFSE/Plugins/OSF/Settings/schemas/dialogueoverhaul-sf.json
 ```
+
+`src/vendor/` holds the OSF Settings SDK headers (see its README); the plugin builds and runs without OSF Settings installed.
 
 ## Credits
 
 - Jonathan Feenstra, [DisableDialogueCameraSFSE](https://github.com/JonathanFeenstra/DisableDialogueCameraSFSE) (GPL-3.0): the idea of filtering the dialogue camera state out of the camera-state switch.
 - AntoniX35, Disable Dialogue Camera, which showed it could be done.
+- ozooma10, [OSF Settings](https://github.com/ozooma10/osf-settings-slim) (GPL-3.0): the settings page and Mod Issues, through its SDK in `src/vendor/`.
 
 ## License
 

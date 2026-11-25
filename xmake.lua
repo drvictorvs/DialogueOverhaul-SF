@@ -2,7 +2,7 @@
 set_xmakever("3.0.0")
 
 set_project("DialogueOverhaulSF")
-set_version("0.2.0")
+set_version("0.3.0")
 set_license("GPL-3.0")
 
 set_arch("x64")
@@ -29,4 +29,5 @@ target("DialogueOverhaulSF", function()
     set_pcxxheader("src/PCH.h")
 
     add_installfiles("dist/Data/SFSE/Plugins/DialogueOverhaulSF.ini", { prefixdir = "SFSE/Plugins" })
+    add_installfiles("dist/Data/SFSE/Plugins/OSF/Settings/schemas/dialogueoverhaul-sf.json", { prefixdir = "SFSE/Plugins/OSF/Settings/schemas" })
 end)

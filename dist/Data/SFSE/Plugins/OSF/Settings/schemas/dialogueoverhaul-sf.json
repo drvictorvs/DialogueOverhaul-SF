@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "title": "Dialogue Overhaul",
+  "description": "Keeps the normal camera during conversations and lets you move while talking.",
+  "groups": {
+    "Camera": [
+      {
+        "key": "disableDialogueCamera",
+        "type": "bool",
+        "label": "Keep the normal camera",
+        "default": true,
+        "hint": "No dialogue close-up or FOV change when a conversation starts. The game's own Settings > Dialogue Camera option also turns the close-up off."
+      }
+    ],
+    "Controls": [
+      {
+        "key": "allowMovement",
+        "type": "bool",
+        "label": "Move while talking",
+        "default": true,
+        "hint": "Walk, run, sprint, jump and crouch during conversations. Walking too far away may end the conversation. Takes effect at the next conversation."
+      },
+      {
+        "key": "allowLooking",
+        "type": "bool",
+        "label": "Look around while talking",
+        "default": true,
+        "hint": "Turn the camera with the mouse during conversations. Takes effect at the next conversation."
+      }
+    ]
+  }
+}
